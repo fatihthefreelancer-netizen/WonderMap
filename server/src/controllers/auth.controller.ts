@@ -14,8 +14,9 @@ const REFRESH_COOKIE = 'wm_refresh';
 function refreshCookieOptions(): CookieOptions {
   return {
     httpOnly: true,
-    secure: env.isProd,
-    sameSite: env.isProd ? 'none' : 'lax',
+    // `none` requires Secure, so the two move together
+    secure: env.isProd || env.cookieSameSite === 'none',
+    sameSite: env.cookieSameSite,
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: '/api/auth',
   };

@@ -13,9 +13,17 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@wondermap/shared": ["../shared/src/index.ts"]
+      "@wondermap/shared": [
+        "../shared/src/index.ts"
+      ]
     },
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
-  "include": ["src/**/*.ts", "../shared/src/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "../shared/src/**/*.ts",
+    "../api/**/*.ts"
+  ]
 }
