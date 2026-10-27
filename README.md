@@ -7,6 +7,9 @@ shared TypeScript contract package.
 
 ![tech](https://img.shields.io/badge/React-19-61dafb) ![tech](https://img.shields.io/badge/TypeScript-5-3178c6) ![tech](https://img.shields.io/badge/Express-4-000000) ![tech](https://img.shields.io/badge/MongoDB-8-47a248)
 
+> **Deploying it?** See **[DEPLOYMENT.md](DEPLOYMENT.md)** — one Vercel project
+> serves the client and the API together, backed by a free MongoDB Atlas cluster.
+
 ---
 
 ## ✨ Features
