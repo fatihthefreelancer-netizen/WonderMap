@@ -1,0 +1,266 @@
+{
+ "donkey": {
+  "h": 106,
+  "w": 95
+ },
+ "fx-glow": {
+  "h": 48,
+  "w": 43
+ },
+ "fx-sparkle": {
+  "h": 61,
+  "w": 68
+ },
+ "fx-star": {
+  "h": 53,
+  "w": 51
+ },
+ "fx-sun": {
+  "h": 51,
+  "w": 55
+ },
+ "good-apples": {
+  "h": 37,
+  "w": 51
+ },
+ "good-bread": {
+  "h": 56,
+  "w": 71
+ },
+ "good-cheese": {
+  "h": 32,
+  "w": 47
+ },
+ "good-chicken": {
+  "h": 63,
+  "w": 43
+ },
+ "good-cloth": {
+  "h": 48,
+  "w": 52
+ },
+ "good-coin": {
+  "h": 31,
+  "w": 33
+ },
+ "good-goat": {
+  "h": 90,
+  "w": 86
+ },
+ "good-grain": {
+  "h": 37,
+  "w": 52
+ },
+ "good-lantern": {
+  "h": 56,
+  "w": 31
+ },
+ "good-milk": {
+  "h": 45,
+  "w": 38
+ },
+ "good-olives": {
+  "h": 43,
+  "w": 53
+ },
+ "good-pot": {
+  "h": 45,
+  "w": 35
+ },
+ "good-spice": {
+  "h": 36,
+  "w": 43
+ },
+ "good-wood": {
+  "h": 40,
+  "w": 52
+ },
+ "medal": {
+  "h": 64,
+  "w": 67
+ },
+ "scales": {
+  "h": 68,
+  "w": 69
+ },
+ "scene-courtyard": {
+  "h": 113,
+  "w": 142
+ },
+ "scene-market": {
+  "h": 114,
+  "w": 193
+ },
+ "scene-souk": {
+  "h": 114,
+  "w": 155
+ },
+ "scene-square": {
+  "h": 113,
+  "w": 219
+ },
+ "ui-check": {
+  "h": 30,
+  "w": 29
+ },
+ "ui-coin": {
+  "h": 32,
+  "w": 32
+ },
+ "ui-cross": {
+  "h": 30,
+  "w": 28
+ },
+ "ui-star": {
+  "h": 32,
+  "w": 31
+ },
+ "ui-trophy": {
+  "h": 31,
+  "w": 29
+ },
+ "who-amira": {
+  "h": 91,
+  "w": 44
+ },
+ "who-amira-cheer": {
+  "h": 85,
+  "w": 52
+ },
+ "who-baker": {
+  "h": 420,
+  "w": 188
+ },
+ "who-baker-cheer": {
+  "h": 420,
+  "w": 177
+ },
+ "who-cheese": {
+  "h": 402,
+  "w": 132
+ },
+ "who-cheese-cheer": {
+  "h": 403,
+  "w": 118
+ },
+ "who-dairy": {
+  "h": 420,
+  "w": 195
+ },
+ "who-dairy-cheer": {
+  "h": 420,
+  "w": 165
+ },
+ "who-elder": {
+  "h": 99,
+  "w": 45
+ },
+ "who-elder-cheer": {
+  "h": 97,
+  "w": 57
+ },
+ "who-farmer": {
+  "h": 420,
+  "w": 160
+ },
+ "who-farmer-cheer": {
+  "h": 420,
+  "w": 173
+ },
+ "who-fisher": {
+  "h": 420,
+  "w": 171
+ },
+ "who-fisher-cheer": {
+  "h": 420,
+  "w": 180
+ },
+ "who-karim": {
+  "h": 83,
+  "w": 44
+ },
+ "who-karim-cheer": {
+  "h": 84,
+  "w": 45
+ },
+ "who-leila": {
+  "h": 85,
+  "w": 41
+ },
+ "who-leila-cheer": {
+  "h": 80,
+  "w": 46
+ },
+ "who-milo": {
+  "h": 89,
+  "w": 35
+ },
+ "who-milo-cheer": {
+  "h": 90,
+  "w": 43
+ },
+ "who-poultry": {
+  "h": 385,
+  "w": 97
+ },
+ "who-poultry-cheer": {
+  "h": 375,
+  "w": 120
+ },
+ "who-rosa": {
+  "h": 87,
+  "w": 34
+ },
+ "who-rosa-cheer": {
+  "h": 87,
+  "w": 42
+ },
+ "who-samir": {
+  "h": 91,
+  "w": 35
+ },
+ "who-samir-cheer": {
+  "h": 89,
+  "w": 43
+ },
+ "who-scout": {
+  "h": 85,
+  "w": 34
+ },
+ "who-scout-cheer": {
+  "h": 88,
+  "w": 43
+ },
+ "who-smith": {
+  "h": 420,
+  "w": 170
+ },
+ "who-smith-cheer": {
+  "h": 419,
+  "w": 155
+ },
+ "who-trader": {
+  "h": 404,
+  "w": 116
+ },
+ "who-trader-cheer": {
+  "h": 394,
+  "w": 124
+ },
+ "who-weaver": {
+  "h": 390,
+  "w": 143
+ },
+ "who-weaver-cheer": {
+  "h": 392,
+  "w": 145
+ },
+ "who-woodman": {
+  "h": 399,
+  "w": 132
+ },
+ "who-woodman-cheer": {
+  "h": 378,
+  "w": 100
+ }
+}

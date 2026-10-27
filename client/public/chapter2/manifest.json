@@ -1,0 +1,246 @@
+{
+ "item-apples": {
+  "h": 40,
+  "w": 57
+ },
+ "item-backpack": {
+  "h": 85,
+  "w": 72
+ },
+ "item-balloons": {
+  "h": 84,
+  "w": 61
+ },
+ "item-blanket": {
+  "h": 51,
+  "w": 60
+ },
+ "item-bread": {
+  "h": 40,
+  "w": 59
+ },
+ "item-brokenumbrella": {
+  "h": 84,
+  "w": 75
+ },
+ "item-camel": {
+  "h": 101,
+  "w": 115
+ },
+ "item-carpet": {
+  "h": 53,
+  "w": 72
+ },
+ "item-carwash": {
+  "h": 84,
+  "w": 71
+ },
+ "item-cheese": {
+  "h": 45,
+  "w": 51
+ },
+ "item-coin": {
+  "h": 33,
+  "w": 33
+ },
+ "item-coins": {
+  "h": 45,
+  "w": 47
+ },
+ "item-dog": {
+  "h": 87,
+  "w": 59
+ },
+ "item-fish": {
+  "h": 46,
+  "w": 63
+ },
+ "item-gold": {
+  "h": 70,
+  "w": 65
+ },
+ "item-jars": {
+  "h": 85,
+  "w": 95
+ },
+ "item-map": {
+  "h": 65,
+  "w": 72
+ },
+ "item-medal": {
+  "h": 75,
+  "w": 48
+ },
+ "item-milk": {
+  "h": 53,
+  "w": 45
+ },
+ "item-music": {
+  "h": 82,
+  "w": 77
+ },
+ "item-toolbox": {
+  "h": 57,
+  "w": 66
+ },
+ "item-tools": {
+  "h": 54,
+  "w": 63
+ },
+ "item-water": {
+  "h": 74,
+  "w": 32
+ },
+ "item-wood": {
+  "h": 51,
+  "w": 68
+ },
+ "scene-mountain": {
+  "h": 63,
+  "w": 108
+ },
+ "scene-party": {
+  "h": 64,
+  "w": 112
+ },
+ "scene-track": {
+  "h": 57,
+  "w": 97
+ },
+ "ui-badge": {
+  "h": 56,
+  "w": 47
+ },
+ "ui-basket-help": {
+  "h": 43,
+  "w": 47
+ },
+ "ui-basket-knowledge": {
+  "h": 42,
+  "w": 45
+ },
+ "ui-basket-things": {
+  "h": 43,
+  "w": 43
+ },
+ "ui-cards": {
+  "h": 48,
+  "w": 72
+ },
+ "ui-clock": {
+  "h": 44,
+  "w": 46
+ },
+ "ui-drops": {
+  "h": 34,
+  "w": 32
+ },
+ "ui-note": {
+  "h": 43,
+  "w": 35
+ },
+ "ui-pin": {
+  "h": 52,
+  "w": 56
+ },
+ "ui-slots": {
+  "h": 33,
+  "w": 48
+ },
+ "ui-snow": {
+  "h": 36,
+  "w": 33
+ },
+ "ui-speech": {
+  "h": 44,
+  "w": 47
+ },
+ "ui-sun": {
+  "h": 36,
+  "w": 38
+ },
+ "ui-thought": {
+  "h": 41,
+  "w": 48
+ },
+ "ui-wallet": {
+  "h": 47,
+  "w": 47
+ },
+ "ui-wind": {
+  "h": 37,
+  "w": 41
+ },
+ "who-adam": {
+  "h": 247,
+  "w": 98
+ },
+ "who-adam-happy": {
+  "h": 247,
+  "w": 96
+ },
+ "who-drip": {
+  "h": 233,
+  "w": 112
+ },
+ "who-drip-happy": {
+  "h": 225,
+  "w": 113
+ },
+ "who-hassan": {
+  "h": 230,
+  "w": 95
+ },
+ "who-hassan-happy": {
+  "h": 227,
+  "w": 96
+ },
+ "who-ines": {
+  "h": 236,
+  "w": 84
+ },
+ "who-ines-happy": {
+  "h": 236,
+  "w": 110
+ },
+ "who-maya": {
+  "h": 233,
+  "w": 93
+ },
+ "who-maya-happy": {
+  "h": 230,
+  "w": 103
+ },
+ "who-puff": {
+  "h": 171,
+  "w": 132
+ },
+ "who-puff-happy": {
+  "h": 165,
+  "w": 136
+ },
+ "who-rayan": {
+  "h": 249,
+  "w": 82
+ },
+ "who-rayan-happy": {
+  "h": 249,
+  "w": 116
+ },
+ "who-yara": {
+  "h": 235,
+  "w": 88
+ },
+ "who-yara-happy": {
+  "h": 233,
+  "w": 106
+ },
+ "who-zaid": {
+  "h": 232,
+  "w": 95
+ },
+ "who-zaid-happy": {
+  "h": 228,
+  "w": 130
+ }
+}

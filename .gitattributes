@@ -1,0 +1,28 @@
+# Normalise line endings so a checkout on Windows and one on macOS/Linux do not
+# show every file as modified. Text is stored LF in the repository and checked
+# out with the platform's own endings.
+* text=auto eol=lf
+
+# Windows-only scripts must keep CRLF or PowerShell can mis-parse them.
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Never touch binaries.
+*.png  binary
+*.webp binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.otf  binary
+*.mp3  binary
+*.ogg  binary
+*.m4a  binary
+*.pdf  binary
+
+# Generated — collapse it in pull request diffs.
+package-lock.json linguist-generated=true -diff

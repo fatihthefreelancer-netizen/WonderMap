@@ -1,0 +1,20 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+*.local
+.DS_Store
+coverage/
+*.log
+npm-debug.log*
+.vite/
+client/dist/
+server/dist/
+shared/dist/
+
+# Vercel CLI local link
+.vercel/
+
+# incremental TypeScript build state (tsc -b)
+*.tsbuildinfo

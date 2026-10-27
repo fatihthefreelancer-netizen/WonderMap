@@ -1,0 +1,291 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --wm-sky-top: #bfeaff;
+  --wm-sky-bottom: #8fd7ff;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'Nunito', system-ui, sans-serif;
+  overflow: hidden;
+  color: #1f3a5f;
+  overscroll-behavior: none;
+}
+
+.font-display {
+  font-family: 'Baloo 2', 'Nunito', sans-serif;
+}
+
+/* The map viewport should never show native scrollbars or text selection. */
+.map-viewport {
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+.map-viewport:active {
+  cursor: grabbing;
+}
+
+/* Soft cartoon text outline used on floating labels. */
+.text-outline {
+  text-shadow:
+    -1.5px -1.5px 0 rgba(255, 255, 255, 0.9),
+    1.5px -1.5px 0 rgba(255, 255, 255, 0.9),
+    -1.5px 1.5px 0 rgba(255, 255, 255, 0.9),
+    1.5px 1.5px 0 rgba(255, 255, 255, 0.9);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* ---------------------------------------------------------------------------
+   Ambient life for the illustrated world. These run on SVG groups, so they set
+   `transform-box: view-box` to make `transform-origin` resolve in the same user
+   units the art is drawn in. Keep them cheap: transform/opacity only.
+   --------------------------------------------------------------------------- */
+.wm-sway,
+.wm-sway-slow,
+.wm-breathe,
+.wm-spin,
+.wm-bobbing,
+.wm-drift,
+.wm-flow,
+.wm-smoke,
+.wm-glow {
+  transform-box: view-box;
+}
+
+/* Frame-by-frame playback of a horizontal sprite strip. The element is one cell
+   wide; the animation walks the background one cell per step. */
+.wm-frames {
+  background-repeat: no-repeat;
+  animation-name: wmFrames;
+  animation-timing-function: steps(var(--wm-frames));
+  animation-iteration-count: infinite;
+}
+@keyframes wmFrames {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: calc(-1 * var(--wm-frames) * var(--wm-cell));
+  }
+}
+
+/* A bird crossing the scene: the flap is the strip, this is the travel. */
+@keyframes wmFly {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(var(--wm-fly-x, 900px), var(--wm-fly-y, -40px), 0);
+  }
+}
+.wm-fly {
+  animation: wmFly linear infinite;
+}
+
+@keyframes wmSway {
+  from {
+    transform: rotate(-1.7deg);
+  }
+  to {
+    transform: rotate(1.7deg);
+  }
+}
+.wm-sway {
+  animation: wmSway 5.5s ease-in-out infinite alternate;
+}
+.wm-sway-slow {
+  animation: wmSway 9s ease-in-out infinite alternate;
+}
+
+@keyframes wmBreathe {
+  from {
+    transform: scale(1) translateY(0);
+  }
+  to {
+    transform: scale(1.035) translateY(-2px);
+  }
+}
+.wm-breathe {
+  animation: wmBreathe 4.5s ease-in-out infinite alternate;
+}
+
+@keyframes wmSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.wm-spin {
+  animation: wmSpin 26s linear infinite;
+}
+
+@keyframes wmBob {
+  from {
+    transform: translateY(0) rotate(-1deg);
+  }
+  to {
+    transform: translateY(-4px) rotate(1deg);
+  }
+}
+.wm-bobbing {
+  animation: wmBob 3.4s ease-in-out infinite alternate;
+}
+
+@keyframes wmDrift {
+  from {
+    transform: translateX(-26px);
+  }
+  to {
+    transform: translateX(26px);
+  }
+}
+.wm-drift {
+  animation: wmDrift 30s ease-in-out infinite alternate;
+}
+
+@keyframes wmFlow {
+  from {
+    transform: translateX(-10px);
+    opacity: 0.55;
+  }
+  to {
+    transform: translateX(14px);
+    opacity: 1;
+  }
+}
+.wm-flow {
+  animation: wmFlow 6s ease-in-out infinite alternate;
+}
+
+@keyframes wmSmoke {
+  0% {
+    transform: translateY(6px) scale(0.7);
+    opacity: 0;
+  }
+  35% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateY(-26px) scale(1.25);
+    opacity: 0;
+  }
+}
+.wm-smoke {
+  animation: wmSmoke 7s ease-out infinite;
+}
+
+@keyframes wmGlow {
+  from {
+    opacity: 0.12;
+  }
+  to {
+    opacity: 0.32;
+  }
+}
+.wm-glow {
+  animation: wmGlow 3.2s ease-in-out infinite alternate;
+}
+
+
+/* Dialogue reveals a word at a time, like the chapter's elder is speaking. */
+@keyframes wmWord {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.wm-word {
+  display: inline-block;
+  animation: wmWord 0.26s ease-out both;
+}
+
+
+/* Villager reactions on the barter board, matching the arc1 prototype. */
+@keyframes wmCheer {
+  30% {
+    transform: translateY(-14%);
+  }
+  55% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-5%);
+  }
+}
+.wm-cheer {
+  animation: wmCheer 0.7s;
+}
+@keyframes wmShake {
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+.wm-shake {
+  animation: wmShake 0.45s;
+}
+@keyframes wmPulse {
+  50% {
+    filter: drop-shadow(0 0 14px #ffc233) drop-shadow(0 0 4px #fff);
+    transform: scale(1.06);
+  }
+}
+.wm-pulse {
+  animation: wmPulse 0.7s ease-in-out 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Custom range slider for admin editor */
+input[type='range'].wm-range {
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: #d7ecff;
+}
+input[type='range'].wm-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #4bb8f0;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
