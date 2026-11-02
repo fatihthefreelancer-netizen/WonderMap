@@ -454,24 +454,32 @@ export function QuestBoard({
                 : { scale: 1, opacity: 1 }
           }
           transition={tour && !ghost ? { duration: 1.4, repeat: Infinity } : { duration: 0.2 }}
-          className={`pointer-events-auto flex touch-none select-none items-center gap-3 rounded-[26px] bg-white/95 py-2.5 pl-2.5 pr-6 shadow-hud-lg backdrop-blur-sm ${
+          className={`pointer-events-auto flex touch-none select-none items-center gap-3 rounded-[26px] bg-[#fdf1d8]/95 py-2.5 pl-2.5 pr-6 shadow-hud-lg backdrop-blur-sm ${
             live ? 'cursor-grab active:cursor-grabbing' : ''
           } ${tour && live ? 'ring-4 ring-[#ffd34e]' : ''}`}
         >
-          <span className="grid h-20 w-20 place-items-center rounded-[20px] bg-[#fff4d6] sm:h-24 sm:w-24">
-            <span className="block h-14 w-14 sm:h-16 sm:w-16">
+          <span className="grid h-16 w-16 place-items-center rounded-[20px] sm:h-20 sm:w-20">
+            <span className="block h-full w-full">
               <Good good={carrying} fluid />
             </span>
           </span>
           <span className="text-start leading-tight">
-            <span className="block font-display text-[11px] font-extrabold uppercase tracking-wide text-[#8296ad]">
+            <span className="block font-display text-[11px] font-extrabold uppercase tracking-wide text-[#b08a4a]">
               {copy.ui.carrying}
             </span>
-            <span className="block font-display text-[22px] font-extrabold text-[#8a5f1a] sm:text-[26px]">
+            <span className="block font-display text-[22px] font-extrabold text-[#6b4a1e] sm:text-[26px]">
               {copy.goods[carrying].name}
             </span>
           </span>
         </motion.button>
+
+        {/* what the one becomes when the chain is finished */}
+        <span
+          aria-hidden
+          className="font-display text-[26px] font-black leading-none text-[#8a5f1a] sm:text-[32px]"
+        >
+          ⇄
+        </span>
 
         {/*
           And what it is all for, right beside it.
@@ -482,19 +490,19 @@ export function QuestBoard({
           carry card on purpose — this one is a reminder, not a handle.
         */}
         <div
-          className="pointer-events-none flex select-none items-center gap-2.5 rounded-[26px] bg-white/80 py-2.5 pl-2.5 pr-5 shadow-hud backdrop-blur-sm"
+          className="pointer-events-none flex select-none items-center gap-3 rounded-[26px] bg-[#e7f6e0]/95 py-2.5 pl-2.5 pr-6 shadow-hud-lg backdrop-blur-sm"
           aria-label={`${copy.ui.youWant}: ${copy.goods[scenario.goal].name}`}
         >
-          <span className="grid h-14 w-14 place-items-center rounded-[18px] bg-[#eafbe4] sm:h-16 sm:w-16">
-            <span className="block h-9 w-9 sm:h-11 sm:w-11">
+          <span className="grid h-16 w-16 place-items-center rounded-[20px] sm:h-20 sm:w-20">
+            <span className="block h-full w-full">
               <Good good={scenario.goal} fluid />
             </span>
           </span>
           <span className="text-start leading-tight">
-            <span className="block font-display text-[10px] font-extrabold uppercase tracking-wide text-[#8296ad]">
+            <span className="block font-display text-[11px] font-extrabold uppercase tracking-wide text-[#6a9a5c]">
               {copy.ui.youWant}
             </span>
-            <span className="block font-display text-[16px] font-extrabold text-[#2d6a31] sm:text-[19px]">
+            <span className="block font-display text-[22px] font-extrabold text-[#2d6a31] sm:text-[26px]">
               {copy.goods[scenario.goal].name}
             </span>
           </span>

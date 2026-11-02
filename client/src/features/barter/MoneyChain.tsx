@@ -72,6 +72,7 @@ function InFlight({
   lift,
   boxW,
   boxH,
+  bodyH,
 }: {
   good: GoodKey;
   from: Spot;
@@ -80,13 +81,27 @@ function InFlight({
   lift: number;
   boxW: number;
   boxH: number;
+  /** villager height, as a fraction of scene width — same units as `layout` */
+  bodyH: number;
 }) {
-  // Spots are fractions of the scene box, so everything resolves to pixels
-  // here and the animation is a plain transform.
+  /*
+   * Hand height, not somewhere near the feet.
+   *
+   * A spot's `y` is where a villager *stands*; the goods they hold are drawn
+   * at 53% down their body, and a villager is positioned bottom-up from that
+   * standing line. So the hand is 47% of a body above it. Guessing with a flat
+   * offset put the coin down around everyone's boots, which made it look like
+   * it was sliding along the ground rather than being handed over.
+   *
+   * `bodyH` is a fraction of scene *width* (see `layout`), so it is multiplied
+   * by boxW while the standing line is a fraction of height.
+   */
+  const handY = (s: Spot) => s.y * boxH - 0.47 * bodyH * boxW;
+
   const startX = from.x * boxW;
-  const startY = (from.y - 0.12) * boxH;
+  const startY = handY(from);
   const dx = (to.x - from.x) * boxW;
-  const dy = (to.y - from.y) * boxH;
+  const dy = handY(to) - handY(from);
   const size = from.w * boxW * 0.38;
 
   return (
@@ -281,6 +296,7 @@ export function MoneyChain({ live, onPrompt, onPaid, onDone }: Props) {
             lift={-0.09 * boxH}
             boxW={boxW}
             boxH={boxH}
+            bodyH={bodyH}
           />
           <InFlight
             key={`goods-${flight.seller}-${flight.buyer}`}
@@ -290,6 +306,7 @@ export function MoneyChain({ live, onPrompt, onPaid, onDone }: Props) {
             lift={0.09 * boxH}
             boxW={boxW}
             boxH={boxH}
+            bodyH={bodyH}
           />
         </>
       )}

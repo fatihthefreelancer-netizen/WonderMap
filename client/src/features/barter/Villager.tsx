@@ -13,26 +13,28 @@ import type { Spot } from './layout';
  */
 
 /**
- * The name of a good, shown while the villager is hovered.
+ * The name of the good a villager is asking for, shown while their wish
+ * bubble is hovered.
  *
  * A seven-year-old who cannot yet tell a wheel of cheese from a loaf at
- * thought-bubble size has no way to check: the picture is the only label the
- * board gives them, and guessing wrong costs a trade. Hovering names both of
- * a villager's goods.
+ * thought-bubble size has no way to check, and guessing wrong costs a trade.
+ * Only the wish is named: what somebody is *holding* is not what you have to
+ * recognise to play, and labelling both put two captions on every villager.
  *
- * It hangs off the villager rather than off each good because the goods
- * themselves are `pointer-events-none` — they have to be, or they would
- * swallow the drop that the villager underneath is waiting for. Sized in cqw
- * like everything else here, so it scales with the board.
+ * The trigger is the bubble itself rather than the whole figure, so it is
+ * unambiguous which picture is being named — and the bubble lights up at the
+ * same time to say so. Making the bubble hoverable is safe because a drop is
+ * resolved with `closest('[data-villager]')`, so a pointer over the bubble
+ * still finds the villager underneath it.
  */
-function GoodName({ text, top }: { text: string; top: string }) {
+function GoodName({ text }: { text: string }) {
   return (
     <span
       aria-hidden
-      className="pointer-events-none absolute z-50 whitespace-nowrap rounded-full bg-[#1f3a5f]/95 font-display font-extrabold text-white opacity-0 shadow-hud transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+      className="pointer-events-none absolute z-50 whitespace-nowrap rounded-full bg-[#1f3a5f]/95 font-display font-extrabold text-white opacity-0 shadow-hud transition-opacity duration-150 group-hover/wish:opacity-100"
       style={{
         left: '50%',
-        top,
+        top: '104%',
         transform: 'translateX(-50%)',
         fontSize: 'max(9px, 11cqw)',
         padding: '0.15em 0.6em',
@@ -156,7 +158,7 @@ export const Villager = memo(function Villager({
           (onKeyActivate ?? onClick)?.();
         }
       }}
-      className={`group absolute transition-[left,top,opacity,filter] duration-500 ${
+      className={`absolute transition-[left,top,opacity,filter] duration-500 ${
         interactive ? 'cursor-pointer' : 'cursor-default'
       } ${dim ? 'opacity-30 grayscale' : 'opacity-100'}`}
       style={{
@@ -169,10 +171,19 @@ export const Villager = memo(function Villager({
         touchAction: 'none',
       }}
     >
-      {/* what they wish for */}
-      <div className="pointer-events-none absolute" style={{ left: '60%', top: '-20cqw' }}>
+      {/*
+        What they wish for.
+
+        `pointer-events-auto` on the cloud so it can be hovered on its own —
+        the drop still lands, because the board resolves a drop by walking up
+        to `[data-villager]`, and this sits inside one.
+      */}
+      <div
+        className="group/wish pointer-events-auto absolute"
+        style={{ left: '60%', top: '-20cqw' }}
+      >
         <div
-          className="relative grid place-items-center rounded-[50%] transition-transform"
+          className="relative grid place-items-center rounded-[50%] transition-all duration-150 group-hover/wish:scale-110"
           style={{
             width: '50cqw',
             height: '43cqw',
@@ -182,10 +193,24 @@ export const Villager = memo(function Villager({
             transform: happy ? 'scale(1.05)' : undefined,
           }}
         >
+          {/*
+            The lit ring. A separate element rather than a border on the cloud
+            itself, because the cloud's border is already doing the "this wish
+            is satisfied" green and the two would fight.
+          */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute rounded-[50%] opacity-0 transition-opacity duration-150 group-hover/wish:opacity-100"
+            style={{
+              inset: 'max(-3px, -2.4cqw)',
+              border: 'max(2px, 1.8cqw) solid #3aa9e8',
+              boxShadow: '0 0 max(8px, 6cqw) rgba(58,169,232,.75)',
+            }}
+          />
           <div style={{ width: '70%' }}>
             <Good good={v.need} fluid />
           </div>
-          <GoodName text={copy.goods[v.need].name} top="100%" />
+          <GoodName text={copy.goods[v.need].name} />
           {happy && (
             <span
               className="absolute grid place-items-center rounded-full bg-[#5fc14e] font-display font-extrabold text-white"
@@ -269,10 +294,6 @@ export const Villager = memo(function Villager({
         >
           <Good good={v.holds} fluid />
         </div>
-        {/* only when there is a loose good drawn to name */}
-        {!handEmpty && !ownGoods && (
-          <GoodName text={copy.goods[v.holds].name} top="72%" />
-        )}
       </div>
 
       {/* name plate at their feet */}

@@ -620,14 +620,11 @@ function ChapterChrome({
             )}
           </motion.button>
           {/*
-            Three flags are ~150px, which a phone does not have to spare next
-            to the purse, the notebook and the way out. Language is a settings
-            choice rather than a per-beat one, and it is still on the sign-in
-            screen and in Settings, so below `sm` this one goes.
+            Back on phones. Three flags in a row were ~150px and pushed the
+            close button off a 390px screen; one pill is about a third of that,
+            so the language no longer has to be given up on a small screen.
           */}
-          <div className="hidden sm:block">
-            <FlagSwitch className="bg-white/95 shadow-hud backdrop-blur-sm" />
-          </div>
+          <FlagSwitch className="bg-white/95 shadow-hud backdrop-blur-sm" />
           <motion.button
             onClick={onExit}
             whileHover={{ scale: 1.08 }}

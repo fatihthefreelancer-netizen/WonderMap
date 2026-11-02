@@ -28,6 +28,34 @@ interface Props {
 
 type Phase = 'intro' | 'shelf' | 'testing' | 'verdict' | 'done';
 
+/**
+ * What each candidate looks like when it is tried in the market.
+ *
+ * "Three days later it has gone bad", "which half of a goat?", "everybody
+ * already has sacks of it" — each is a sentence a child has to decode before
+ * it means anything. A crate of rotten fish, a goat in two pieces and a square
+ * full of shrugging people carry the same argument at a glance, and the words
+ * become a caption rather than the whole lesson.
+ */
+const TEST_SCENE: Record<CandidateId, string> = {
+  fish: 'fx-fish-rotten',
+  goat: 'fx-goat-split',
+  grain: 'fx-grain-everywhere',
+  // the coin has no failure to picture; the painted coin is the point itself
+  coin: 'coin-front',
+};
+
+function TestScene({ id }: { id: CandidateId }) {
+  return (
+    <img
+      src={art(TEST_SCENE[id])}
+      alt=""
+      draggable={false}
+      className="h-auto max-h-[26vh] w-auto max-w-full select-none object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)] sm:max-h-[32vh]"
+    />
+  );
+}
+
 export function InventMoney({ onNext, onTried, onNote }: Props) {
   const copy = useCopy();
   const [phase, setPhase] = useState<Phase>('intro');
@@ -209,7 +237,13 @@ export function InventMoney({ onNext, onTried, onNote }: Props) {
           <Panel speaker={copy.elder.name} look="elder" text={copy.invent.shelfHint} />
         )}
         {phase === 'testing' && activeCopy && activeDef && (
-          <Panel speaker={copy.elder.name} look="elder" pose="pointing" text={activeCopy.test} />
+          <Panel
+            speaker={copy.elder.name}
+            look="elder"
+            pose="pointing"
+            text={activeCopy.test}
+            scene={<TestScene id={activeDef.id} />}
+          />
         )}
         {phase === 'verdict' && activeCopy && activeDef && (
           <Panel
@@ -217,6 +251,7 @@ export function InventMoney({ onNext, onTried, onNote }: Props) {
             look="elder"
             pose={activeDef.works ? 'pleased' : 'thinking'}
             text={early ? copy.invent.early : activeCopy.verdict}
+            scene={<TestScene id={activeDef.id} />}
             button={copy.ui.continue}
             onNext={() => {
               setActive(null);
