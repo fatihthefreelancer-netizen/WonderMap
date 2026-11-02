@@ -21,12 +21,20 @@ You need a database before any of this works. Roughly 15 minutes end to end.
 3. **Database Access** → *Add New Database User*. Username and password, role
    *Read and write to any database*. Use a generated password and copy it —
    if it contains `@ : / ? # [ ] %`, percent-encode those in the URI below.
-4. **Network Access** → *Add IP Address* → **Allow access from anywhere**
-   (`0.0.0.0/0`).
+4. Allow Vercel to reach the cluster. Atlas renamed this page, and the old name
+   ("Network Access") is still what most guides say, so it is genuinely hard to
+   find:
+
+   **Sidebar → `Database & Network Access`** (under the **Security** heading)
+   → **`IP Access List`** (in the left navigation, under **Network Access**)
+   → **`Add IP Address`** → enter `0.0.0.0/0` → **`Confirm`**.
+
+   Direct link: `https://cloud.mongodb.com/v2/<your-project-id>#/security/network/accessList`
 
    Vercel's functions do not have fixed outbound IPs, so there is no narrower
    range to allow. The database user's password is what protects the cluster —
-   which is why it should be long and random. (Vercel's paid plans offer static
+   which is why it should be long and random. Atlas will email you a warning
+   about the `/0` entry; that is expected. (Vercel's paid plans offer static
    IPs if you later want to lock this down.)
 5. **Connect** → *Drivers* → copy the connection string. Add the database name
    before the `?`:
@@ -102,9 +110,11 @@ That URL is the link to share. Anyone can open it and sign in as
 
 ## If something goes wrong
 
-**503, "Database unavailable"** — `MONGO_URI` is wrong, or Atlas Network Access
-is not open to `0.0.0.0/0`. Vercel → Deployments → the deployment → *Functions*
-shows the real error.
+**503, "Database unavailable"** — nearly always the IP access list rather than
+the URI: Atlas refuses connections from any address not on it, and Vercel's are
+not. Fix it under *Database & Network Access → IP Access List* (step 1.4). If
+that entry is already `0.0.0.0/0`, check `MONGO_URI` in Vercel; the deployment's
+*Functions* log shows the real error.
 
 **Build fails on a missing environment variable** — deliberate. `MONGO_URI`,
 `JWT_ACCESS_SECRET` and `JWT_REFRESH_SECRET` have no production fallback,
