@@ -290,23 +290,6 @@ function Bubble({
         */
         className="relative w-full max-w-3xl"
       >
-        {/*
-          What he is describing, above what he says about it.
-          A line like "three days later it has gone bad" is a lot of words for
-          a child who is still decoding them; a crate of rotten fish is not.
-          It sits inside this overlay rather than on the board behind, because
-          the board is dimmed to 74% while he is speaking.
-        */}
-        {scene && (
-          <motion.div
-            initial={{ opacity: 0, y: 14, scale: 0.92 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: 0.06, type: 'spring', stiffness: 220, damping: 20 }}
-            className="mb-3 flex justify-center"
-          >
-            {scene}
-          </motion.div>
-        )}
         {/* the tail, pointing back at whoever is talking */}
         <span
           aria-hidden
@@ -332,6 +315,26 @@ function Bubble({
             >
               <Typed tokens={tokens} done={done} />
             </p>
+
+            {/*
+              The picture of what he is describing, under his words and inside
+              the card with them.
+              It waits for the line to finish on purpose: arriving first, it
+              answered the question before the question had been asked, and
+              there was no reason left to read the sentence being typed out
+              above it.
+            */}
+            {scene && done && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.94 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 230, damping: 21 }}
+                className="mt-3 flex justify-center"
+              >
+                {scene}
+              </motion.div>
+            )}
+
             {(showButton || extras) && (
               <div className="mt-4 flex items-center gap-3">
                 {done && extras}
@@ -588,21 +591,12 @@ export function VillagerSays({
  * pill and buttons, so that nothing invisible is ever sitting on top of the
  * market.
  */
-export function TipStrip({
-  text,
-  extras,
-  scene,
-}: {
-  text: string;
-  extras?: ReactNode;
-  scene?: ReactNode;
-}) {
+export function TipStrip({ text, extras }: { text: string; extras?: ReactNode }) {
   // Never typed: this one sits there for as long as the learner is playing, so
   // it is an instruction to glance back at, not a line being said to them.
   const { tokens } = useStreamTokens(text);
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[40] flex flex-col items-center gap-2 p-3 sm:p-4">
-      {scene && <div className="mb-1 flex justify-center">{scene}</div>}
       {text && (
         <p className="pointer-events-auto max-w-2xl text-pretty rounded-full bg-white/95 px-5 py-2.5 text-center font-body text-[14px] font-bold leading-snug text-[#3c5771] shadow-hud backdrop-blur-sm sm:text-[15px]">
           <Typed tokens={tokens} done />
@@ -642,7 +636,7 @@ export function Panel({
   scene?: ReactNode;
   onNext?: () => void;
 }) {
-  if (!onNext) return <TipStrip text={text} extras={extras} scene={scene} />;
+  if (!onNext) return <TipStrip text={text} extras={extras} />;
   if (!elias) {
     return <VillagerSays name={speaker} look={look} text={text} button={button} onNext={onNext} />;
   }

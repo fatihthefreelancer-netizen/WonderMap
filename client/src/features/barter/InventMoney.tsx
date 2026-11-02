@@ -51,7 +51,7 @@ function TestScene({ id }: { id: CandidateId }) {
       src={art(TEST_SCENE[id])}
       alt=""
       draggable={false}
-      className="h-auto max-h-[26vh] w-auto max-w-full select-none object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)] sm:max-h-[32vh]"
+      className="h-auto max-h-[18vh] w-auto max-w-full select-none object-contain sm:max-h-[22vh]"
     />
   );
 }
@@ -236,14 +236,13 @@ export function InventMoney({ onNext, onTried, onNote }: Props) {
         {phase === 'shelf' && (
           <Panel speaker={copy.elder.name} look="elder" text={copy.invent.shelfHint} />
         )}
+        {/*
+          No picture while it is being tried — only with the verdict. This
+          line is "let us see what happens", and showing the rotten fish next
+          to it gives the answer away before the market has had its go.
+        */}
         {phase === 'testing' && activeCopy && activeDef && (
-          <Panel
-            speaker={copy.elder.name}
-            look="elder"
-            pose="pointing"
-            text={activeCopy.test}
-            scene={<TestScene id={activeDef.id} />}
-          />
+          <Panel speaker={copy.elder.name} look="elder" pose="pointing" text={activeCopy.test} />
         )}
         {phase === 'verdict' && activeCopy && activeDef && (
           <Panel

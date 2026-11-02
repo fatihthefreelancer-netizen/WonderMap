@@ -67,6 +67,8 @@ interface Props {
   resetKey?: number;
   onState?: (s: BoardState) => void;
   onTip?: (text: string) => void;
+  /** the line telling them what to do, drawn over the market */
+  tip?: string;
   onTrade?: () => void;
   onResolved?: (outcome: 'solved' | 'stuck', state: BoardState) => void;
   onHintReady?: (hint: () => void) => void;
@@ -102,6 +104,7 @@ export function QuestBoard({
   resetKey = 0,
   onState,
   onTip,
+  tip,
   onTrade,
   onResolved,
   onHintReady,
@@ -355,6 +358,42 @@ export function QuestBoard({
     return i >= 0 ? i : 0;
   }, [merchants, carrying]);
 
+  /*
+   * Where the demonstrating hand picks the good up from.
+   *
+   * It used to start at a hard-coded 50% — the middle of the stage — which was
+   * right when the only thing under the market was the carry card. Now that
+   * "you want" sits beside it, the middle of the stage is the middle of the
+   * *pair*, so the hand reached for the goal rather than for the thing it is
+   * telling you to drag. Measured from the card itself, so it stays right
+   * whatever else ends up in that row.
+   */
+  const carryRef = useRef<HTMLButtonElement | null>(null);
+  const [tourFromX, setTourFromX] = useState(50);
+  useEffect(() => {
+    if (!tour || !live) return;
+    const read = () => {
+      const stage = stageRef.current;
+      const card = carryRef.current;
+      if (!stage || !card || !boxW) return;
+      const s = stage.getBoundingClientRect();
+      const c = card.getBoundingClientRect();
+      if (!s.width) return;
+      /*
+       * The hand's `left` is a percentage of the *scene box*, not of the
+       * stage: it lives inside `SceneBox`, which is a fixed-size box centred
+       * in the stage. Measuring against the stage and applying against the box
+       * put the hand in the wrong place by half the difference between them.
+       */
+      const boxLeft = (s.width - boxW) / 2;
+      const centre = c.left + c.width / 2 - s.left;
+      setTourFromX(((centre - boxLeft) / boxW) * 100);
+    };
+    read();
+    window.addEventListener('resize', read);
+    return () => window.removeEventListener('resize', read);
+  }, [tour, live, stageRef, stageSize, boxW]);
+
   return (
     <div className="flex h-full w-full flex-col gap-2">
       <div ref={stageRef} className="relative min-h-0 flex-1">
@@ -406,9 +445,9 @@ export function QuestBoard({
               >
                 <motion.span
                   className="absolute block"
-                  style={{ left: '50%', top: '100%' }}
+                  style={{ left: `${tourFromX}%`, top: '100%' }}
                   animate={{
-                    left: ['50%', `${pos[tourTarget].x * 100}%`],
+                    left: [`${tourFromX}%`, `${pos[tourTarget].x * 100}%`],
                     top: ['100%', `${pos[tourTarget].y * 100 - 18}%`],
                     opacity: [0, 1, 1, 0],
                     scale: [0.75, 1, 1, 0.85],
@@ -434,8 +473,22 @@ export function QuestBoard({
         the distance between "my thing" and "that trader" is a short, obvious
         drag rather than a journey from the corner of the screen.
       */}
+      {/*
+        What to do, over the market rather than beside it. It reads as part of
+        the board now that the side column is gone, and it is directly above
+        the thing it is talking about.
+      */}
+      {tip && (
+        <p className="pointer-events-none shrink-0 px-3 text-center">
+          <span className="pointer-events-auto inline-block max-w-2xl text-pretty rounded-full bg-white/95 px-4 py-1.5 font-body text-[13px] font-bold leading-snug text-[#3c5771] shadow-hud backdrop-blur-sm sm:text-[14px]">
+            {rich(tip)}
+          </span>
+        </p>
+      )}
+
       <div className="relative flex shrink-0 flex-wrap items-center justify-center gap-2 pb-1 sm:gap-3">
         <motion.button
+          ref={carryRef}
           type="button"
           aria-label={`${copy.ui.carrying}: ${copy.goods[carrying].name}`}
           disabled={!live}

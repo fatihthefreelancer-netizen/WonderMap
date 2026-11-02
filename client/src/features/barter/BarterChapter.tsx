@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QuestBoard, type BoardState, type Trade } from './QuestBoard';
-import { QuestPanel } from './Quest';
 import { InventMoney } from './InventMoney';
 import { MoneyChain } from './MoneyChain';
 import {
@@ -22,7 +21,6 @@ import {
 import { Panel } from './Dialogue';
 import {
   DID_YOU_KNOW_ICON,
-  PEOPLE,
   QUIZ,
   SCENARIOS,
   TAKEAWAYS,
@@ -869,7 +867,7 @@ function CoinBeat({ onNext }: { onNext: () => void }) {
           <p className="font-display text-xs font-extrabold uppercase tracking-widest text-[#8296ad]">
             {copy.coin.eyebrow}
           </p>
-          <h2 className="mt-1 text-balance font-display text-2xl font-extrabold leading-tight text-[#1f3a5f]">
+          <h2 className="mt-1 text-balance font-display text-xl font-extrabold leading-tight text-[#1f3a5f] sm:text-2xl [@media(max-height:680px)]:text-lg">
             {copy.coin.heading}
           </h2>
           <p className="my-2 font-display text-3xl font-extrabold text-[#f0a500]">{copy.coin.date}</p>
@@ -934,7 +932,7 @@ function GuessBeat({ onNext }: { onNext: () => void }) {
         <h2 className="mt-1 text-balance font-display text-2xl font-extrabold leading-tight text-[#1f3a5f]">
           {copy.guess.heading}
         </h2>
-        <div className="mt-4 grid gap-2.5">
+        <div className="mt-3 [@media(max-height:680px)]:mt-2 grid gap-2 [@media(max-height:680px)]:gap-1.5">
           {order.map((i) => {
             const o = copy.guess.options[i];
             const chosen = picked.includes(i);
@@ -948,7 +946,7 @@ function GuessBeat({ onNext }: { onNext: () => void }) {
                   sfx(correct ? 'happy' : 'wrong');
                   setPicked((p) => [...p, i]);
                 }}
-                className={`text-pretty rounded-2xl border-2 px-4 py-3 text-start font-display text-[15px] font-extrabold leading-snug transition-colors ${
+                className={`text-pretty rounded-2xl border-2 px-4 py-2.5 [@media(max-height:680px)]:py-2 text-start font-display text-[15px] font-extrabold leading-snug transition-colors ${
                   chosen && correct
                     ? 'border-[#5fc14e] bg-[#eafbe4] text-[#2d6a31]'
                     : chosen
@@ -978,7 +976,7 @@ function GuessBeat({ onNext }: { onNext: () => void }) {
               sfx('tap');
               onNext();
             }}
-            className="mt-4 w-full rounded-full bg-gradient-to-b from-[#5cc5f5] to-[#2f9ae0] px-6 py-3 font-display text-sm font-extrabold text-white shadow-hud"
+            className="mt-3 [@media(max-height:680px)]:mt-2 w-full rounded-full bg-gradient-to-b from-[#5cc5f5] to-[#2f9ae0] px-6 py-2.5 [@media(max-height:680px)]:py-2 font-display text-sm font-extrabold text-white shadow-hud"
           >
             {copy.guess.next}
           </motion.button>
@@ -1128,6 +1126,7 @@ function VillageBeat({
       resetKey={resetKey}
       onState={setState}
       onTip={setTipOverride}
+      tip={phase === 'play' ? tip : undefined}
       onTrade={onTrade}
       showTour={index === 0}
       onResolved={handleResolved}
@@ -1138,35 +1137,50 @@ function VillageBeat({
   return (
     <>
       {/*
-        The market gets the whole screen below the chrome; everything that is
-        *about* the puzzle rather than *in* it lives in one column at the
-        edge. Under `dir="rtl"` the row reverses on its own, so the column
-        lands on the side an Arabic reader expects.
+        The market gets the whole screen below the chrome.
+
+        It used to share it with a column down the side carrying the client's
+        wish, the puzzle counter, the instruction and the two buttons. Every
+        one of those has found a better home — the wish is the "you want" card
+        under the board, the counter is in the chrome, the instruction sits
+        over the market and the buttons float in the corner — and the column
+        was taking a fifth of the width from the only thing that benefits from
+        it, which is how large the traders can be drawn.
       */}
-      <div className="absolute inset-x-0 bottom-0 top-[58px] flex flex-col gap-2 p-2 sm:top-[74px] sm:flex-row sm:gap-3 sm:p-3">
-        {phase !== 'intro' && state && (
-          <div className="w-full shrink-0 sm:h-full sm:w-[196px] lg:w-[224px]">
-            <QuestPanel
-              clientName={copy.names[sc.client] ?? sc.client}
-              clientLook={PEOPLE[sc.client].look}
-              goal={sc.goal}
-              index={index}
-              total={SCENARIOS.length}
-              par={info.par}
-              trades={state.trades}
-              instruction={tip}
-              hintRung={state.hintRung}
-              onHint={() => hintRef.current?.()}
-              onReset={() => {
-                sfx('tap');
-                setResetKey((k) => k + 1);
-                setTipOverride(null);
-              }}
-            />
-          </div>
-        )}
-        <div className="relative min-w-0 flex-1">{board}</div>
+      <div className="absolute inset-x-0 bottom-0 top-[58px] p-2 sm:top-[74px] sm:p-3">
+        <div className="relative h-full w-full">{board}</div>
       </div>
+
+      {/*
+        Hint and restart, out of the way in the corner.
+        `end-3` not `right-3`, so in Arabic they move to the other side with
+        everything else.
+      */}
+      {phase === 'play' && state && (
+        <div className="pointer-events-none absolute bottom-3 end-3 z-40 flex flex-col items-end gap-2 sm:bottom-4 sm:end-4">
+          <span className="pointer-events-auto rounded-full bg-white/90 px-2.5 py-1 font-display text-[11px] font-extrabold text-[#6f87a6] shadow-hud backdrop-blur-sm">
+            {index + 1}/{SCENARIOS.length}
+            {info.par > 0 && ` · ${state.trades}/${info.par}`}
+          </span>
+          <button
+            onClick={() => hintRef.current?.()}
+            className="pointer-events-auto flex items-center gap-1.5 rounded-full bg-[#fff4d6] px-4 py-2.5 font-display text-[13px] font-extrabold text-[#8a5f1a] shadow-hud-lg"
+          >
+            💡 {copy.ui.hint}
+            {state.hintRung > 0 ? ` ${'•'.repeat(state.hintRung)}` : ''}
+          </button>
+          <button
+            onClick={() => {
+              sfx('tap');
+              setResetKey((k) => k + 1);
+              setTipOverride(null);
+            }}
+            className="pointer-events-auto flex items-center gap-1.5 rounded-full bg-white/95 px-4 py-2.5 font-display text-[13px] font-extrabold text-[#6f87a6] shadow-hud-lg backdrop-blur-sm"
+          >
+            ↺ {copy.ui.reset}
+          </button>
+        </div>
+      )}
 
       <Rail>
         {phase === 'intro' && (
@@ -1472,13 +1486,13 @@ function QuizBeat({
         Finish button were simply unreachable. A flex column with `my-auto`
         centres when there is room and scrolls properly when there is not.
       */}
-      <div className="absolute inset-x-0 bottom-[96px] top-[66px] overflow-y-auto px-4">
-        <div className="my-auto flex min-h-full flex-col justify-center py-3">
-        <div className="mx-auto w-full max-w-xl rounded-[32px] bg-white/95 p-6 shadow-hud-lg backdrop-blur-sm sm:p-7">
+      <div className="absolute inset-x-0 bottom-[96px] top-[66px] overflow-y-auto px-4 [@media(max-height:680px)]:bottom-[64px] [@media(max-height:680px)]:top-[56px]">
+        <div className="my-auto flex min-h-full flex-col justify-center py-3 [@media(max-height:680px)]:py-1">
+        <div className="mx-auto w-full max-w-xl rounded-[28px] bg-white/95 p-4 shadow-hud-lg backdrop-blur-sm sm:p-6 [@media(max-height:680px)]:p-3">
           <p className="font-display text-xs font-extrabold uppercase tracking-widest text-[#8296ad]">
             {fillText(copy.quiz.eyebrow, { n: k + 1, total: QUIZ.length })}
           </p>
-          <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#e8eef5]">
+          <div className="mt-2 [@media(max-height:680px)]:mt-1 h-2 overflow-hidden rounded-full bg-[#e8eef5]">
             <div
               className="h-full rounded-full bg-gradient-to-r from-[#5cc5f5] to-[#2f9ae0] transition-all"
               style={{ width: `${(k / QUIZ.length) * 100}%` }}
@@ -1487,7 +1501,7 @@ function QuizBeat({
 
           {/* the transfer question gets a little market to read */}
           {def.diagram && (
-            <div className="mt-3 flex items-end justify-center gap-4 rounded-2xl bg-[#f3f8fc] p-3">
+            <div className="mt-2.5 [@media(max-height:680px)]:mt-1.5 flex items-end justify-center gap-3 [@media(max-height:680px)]:gap-2 rounded-2xl bg-[#f3f8fc] p-2 [@media(max-height:680px)]:p-1.5">
               {def.diagram.map((v) => (
                 <div key={v.id} className="flex flex-col items-center gap-1">
                   <div className="flex items-center gap-1 rounded-full bg-white px-2 py-1 shadow-sm">
@@ -1495,7 +1509,7 @@ function QuizBeat({
                     <span className="font-display text-[11px] font-black text-[#9fb4c8]">→</span>
                     <Good good={v.need} size={22} />
                   </div>
-                  <Portrait look={v.look} size={56} />
+                  <Portrait look={v.look} size={38} />
                   <span className="font-display text-[11px] font-extrabold text-[#2b4a66]">
                     {v.name}
                   </span>
@@ -1504,7 +1518,7 @@ function QuizBeat({
             </div>
           )}
 
-          <h2 className="mt-3 text-balance font-display text-xl font-extrabold leading-snug text-[#1f3a5f]">
+          <h2 className="mt-2.5 [@media(max-height:680px)]:mt-1.5 text-balance font-display text-[19px] font-extrabold leading-snug text-[#1f3a5f] sm:text-xl">
             {rich(words.q)}
           </h2>
           <div className="mt-4 grid gap-2.5">
@@ -1627,14 +1641,15 @@ function EndBeat({
   const widest = Math.max(barter, money);
 
   return (
-    <div className="absolute inset-0 grid place-items-center overflow-y-auto px-4 py-24">
+    <div className="absolute inset-0 overflow-y-auto px-4 py-4 [@media(max-height:680px)]:py-1">
+      <div className="flex min-h-full flex-col justify-center">
       <motion.div
         initial={{ scale: 0.92, opacity: 0, y: 18 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 220, damping: 22 }}
-        className="w-full max-w-xl rounded-[32px] bg-white/95 p-6 text-center shadow-hud-lg backdrop-blur-sm sm:p-7"
+        className="mx-auto w-full max-w-xl rounded-[28px] bg-white/95 p-4 text-center shadow-hud-lg backdrop-blur-sm sm:p-5 [@media(max-height:680px)]:p-3"
       >
-        <img src={art('medal')} alt="" className="mx-auto h-20 w-20 object-contain" />
+        <img src={art('medal')} alt="" className="mx-auto h-14 w-14 object-contain sm:h-16 sm:w-16 [@media(max-height:680px)]:h-10 [@media(max-height:680px)]:w-10" />
         <p className="mt-1 font-display text-xs font-extrabold uppercase tracking-widest text-[#8296ad]">
           {copy.end.eyebrow}
         </p>
@@ -1653,7 +1668,7 @@ function EndBeat({
         )}
 
         {/* ------------------------- the comparison ------------------------- */}
-        <div className="mt-5 rounded-2xl bg-[#f3f8fc] p-4 text-left">
+        <div className="mt-3 [@media(max-height:680px)]:mt-2 rounded-2xl bg-[#f3f8fc] p-3 [@media(max-height:680px)]:p-2 text-left">
           <p className="font-display text-[13px] font-extrabold text-[#2b4a66]">
             {copy.end.compareTitle}
           </p>
@@ -1686,7 +1701,7 @@ function EndBeat({
         </div>
 
         {/* ---------------------------- the stats --------------------------- */}
-        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="mt-3 [@media(max-height:680px)]:mt-2 grid grid-cols-4 gap-2">
           <Stat n={totals.trades} label={copy.end.statTrades} />
           <Stat n={totals.happy} label={copy.end.statHappy} />
           <Stat n={totals.hints} label={totals.hints === 1 ? copy.end.statHint : copy.end.statHints} />
@@ -1702,7 +1717,7 @@ function EndBeat({
             sfx('tap');
             setShowLearned((v) => !v);
           }}
-          className="mt-4 w-full rounded-full bg-[#f1f6fb] px-4 py-2.5 font-display text-[13px] font-extrabold text-[#5b7290]"
+          className="mt-3 [@media(max-height:680px)]:mt-2 w-full rounded-full bg-[#f1f6fb] px-4 py-2 [@media(max-height:680px)]:py-1.5 font-display text-[13px] font-extrabold text-[#5b7290]"
         >
           {copy.end.learned} {showLearned ? '▾' : '▸'}
         </button>
@@ -1743,11 +1758,12 @@ function EndBeat({
           whileTap={{ scale: 0.97 }}
           disabled={submitting}
           onClick={onFinish}
-          className="mt-5 w-full rounded-full bg-gradient-to-b from-[#7ddc63] to-[#3fae38] px-6 py-3.5 font-display text-base font-extrabold text-white shadow-hud disabled:opacity-60"
+          className="mt-3 [@media(max-height:680px)]:mt-2 w-full rounded-full bg-gradient-to-b from-[#7ddc63] to-[#3fae38] px-6 py-3 [@media(max-height:680px)]:py-2.5 font-display text-base font-extrabold text-white shadow-hud disabled:opacity-60"
         >
           {submitting ? copy.end.saving : copy.end.collect}
         </motion.button>
-      </motion.div>
+        </motion.div>
+      </div>
       <Confetti n={34} />
     </div>
   );
