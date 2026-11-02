@@ -23,7 +23,6 @@
   },
   "include": [
     "src/**/*.ts",
-    "../shared/src/**/*.ts",
-    "../api/**/*.ts"
+    "../shared/src/**/*.ts"
   ]
 }

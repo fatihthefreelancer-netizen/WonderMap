@@ -1,6 +1,17 @@
 import axios, { AxiosError, type AxiosInstance } from 'axios';
 
-const baseURL = import.meta.env.VITE_API_URL ?? '/api';
+/*
+ * Same-origin by default, which is how this deploys: the client and the API
+ * share one domain, so `/api` is correct and the session cookie stays
+ * first-party. `||` rather than `??` on purpose — an env var that is present
+ * but empty is the usual way this gets set by accident, and `??` would accept
+ * the empty string and send every request to the site root.
+ *
+ * Only set VITE_API_URL when the API genuinely lives somewhere else. Setting
+ * it in a Vercel project would point the deployed site at that host instead of
+ * its own, which is almost never what anyone wants.
+ */
+const baseURL = import.meta.env.VITE_API_URL || '/api';
 
 /** In-memory access token. Refresh token lives in an httpOnly cookie. */
 let accessToken: string | null = null;
