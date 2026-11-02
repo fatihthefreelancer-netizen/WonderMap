@@ -51,7 +51,7 @@ function TestScene({ id }: { id: CandidateId }) {
       src={art(TEST_SCENE[id])}
       alt=""
       draggable={false}
-      className="h-auto max-h-[18vh] w-auto max-w-full select-none object-contain sm:max-h-[22vh]"
+      className="h-auto max-h-[26vh] w-auto max-w-full select-none object-contain sm:max-h-[32vh]"
     />
   );
 }

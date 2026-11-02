@@ -300,7 +300,7 @@ function Bubble({
         <div className="relative rounded-[32px] bg-white p-[7px] shadow-[0_14px_0_rgba(31,58,95,0.20),0_34px_60px_-20px_rgba(0,0,0,0.7)]">
           <StarPin />
           <GemPin />
-          <div className="relative overflow-hidden rounded-[26px] border-[3px] border-[#dce9f6] bg-gradient-to-b from-white to-[#eef6fd] px-6 py-5 sm:px-8 sm:py-6">
+          <div className="relative overflow-hidden rounded-[26px] border-[3px] border-[#dce9f6] bg-gradient-to-b from-white to-[#eef6fd] px-4 py-3.5 sm:px-6 sm:py-4">
             <div className="mb-2.5">
               <NameTicket name={name} />
             </div>
@@ -318,18 +318,15 @@ function Bubble({
 
             {/*
               The picture of what he is describing, under his words and inside
-              the card with them.
-              It waits for the line to finish on purpose: arriving first, it
-              answered the question before the question had been asked, and
-              there was no reason left to read the sentence being typed out
-              above it.
+              the card with them — up from the first word, so a child who
+              cannot read the sentence yet is not left waiting on it.
             */}
-            {scene && done && (
+            {scene && (
               <motion.div
                 initial={{ opacity: 0, y: 10, scale: 0.94 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ type: 'spring', stiffness: 230, damping: 21 }}
-                className="mt-3 flex justify-center"
+                className="mt-2 flex justify-center"
               >
                 {scene}
               </motion.div>

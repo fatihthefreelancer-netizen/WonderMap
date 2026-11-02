@@ -329,6 +329,7 @@ export function BarterChapter({ onExit, onFinish, submitting, userId = 'me' }: P
       <ChapterChrome
         step={step}
         total={BEATS.length}
+        showProgress={beat.kind !== 'end'}
         pages={earned.length}
         onBook={openBook}
         coins={run.state.coins}
@@ -523,6 +524,7 @@ function ChapterChrome({
   stars,
   pages,
   canGoBack,
+  showProgress,
   onBack,
   onBook,
   onExit,
@@ -534,6 +536,8 @@ function ChapterChrome({
   stars: number;
   pages: number;
   canGoBack: boolean;
+  /** off on the results screen, where the chapter is already over */
+  showProgress: boolean;
   onBack: () => void;
   onBook: () => void;
   onExit: () => void;
@@ -638,7 +642,12 @@ function ChapterChrome({
       {/*
         Exactly one progress indicator, on its own line. The dots, the quest
         strip and the puzzle chip used to be laid on top of one another here.
+
+        It goes entirely on the results screen: the chapter is finished, so
+        "how far along am I" has no answer left to give, and the row was
+        sitting across the top of the medal.
       */}
+      {showProgress && (
       <div className="mt-1.5 flex items-center justify-center gap-3">
         <div className="hidden items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 shadow-hud backdrop-blur-sm lg:flex">
           {Array.from({ length: total }).map((_, i) => (
@@ -660,6 +669,7 @@ function ChapterChrome({
           <StarRow earned={stars} total={TOTAL_STARS} />
         </div>
       </div>
+      )}
     </div>
   );
 }
