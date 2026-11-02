@@ -4,13 +4,7 @@
     "client": {
       "root": "client",
       "framework": "vite",
-      "rewrites": [
-        {
-          "//": "SPA history fallback. The router owns /login, /settings and the rest, so a cold load of one of those has to be served index.html rather than 404. The pattern excludes any path containing a dot, which is every real file: a plain /(.*) here is applied before the filesystem is consulted and swallowed the art, serving scene-square.webp as HTML.",
-          "source": "/((?!.*\\.).*)",
-          "destination": "/index.html"
-        }
-      ]
+      "rewrites": [{ "source": "/((?!.*\\.).*)", "destination": "/index.html" }]
     },
     "server": {
       "root": "server",
