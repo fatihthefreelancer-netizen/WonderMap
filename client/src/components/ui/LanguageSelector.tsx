@@ -22,7 +22,12 @@ export function LanguageSelector() {
                 : 'border-slate-200 bg-slate-50 text-[#1f3a5f]'
             }`}
           >
-            <span className="text-3xl">{l.flag}</span>
+            <img
+              src={l.flagSrc}
+              alt=""
+              draggable={false}
+              className="h-10 w-14 select-none rounded-[6px] object-cover shadow-sm ring-1 ring-black/10"
+            />
             <span className="mt-1 font-display text-sm font-extrabold">{l.label}</span>
           </motion.button>
         ))}

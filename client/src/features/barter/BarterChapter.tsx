@@ -551,8 +551,15 @@ function ChapterChrome({
   const rtl = useRtl();
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-30 p-3 sm:p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div className="pointer-events-auto flex items-center gap-2">
+      {/*
+        On a 390px phone this row measured 526px wide: the close button and two
+        of the three flags were simply off the right-hand edge, so there was no
+        way to leave the chapter. The controls keep their size and the title
+        gives up the space — hence `min-w-0` here and `shrink-0` on the
+        controls, which lets the capsule's `truncate` finally do its job.
+      */}
+      <div className="flex items-start justify-between gap-2 sm:gap-3">
+        <div className="pointer-events-auto flex min-w-0 items-center gap-2">
           {canGoBack && (
             <motion.button
               onClick={onBack}
@@ -587,7 +594,7 @@ function ChapterChrome({
           "how am I doing / what are my controls", and the star row used to be
           stranded on its own line under the progress bar.
         */}
-        <div className="pointer-events-auto flex items-center gap-2">
+        <div className="pointer-events-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
           <div className="hidden items-center gap-1 rounded-full bg-white/95 px-3 py-2 shadow-hud backdrop-blur-sm sm:flex">
             <StarRow earned={stars} total={TOTAL_STARS} />
           </div>
@@ -612,7 +619,15 @@ function ChapterChrome({
               </span>
             )}
           </motion.button>
-          <FlagSwitch className="bg-white/95 shadow-hud backdrop-blur-sm" />
+          {/*
+            Three flags are ~150px, which a phone does not have to spare next
+            to the purse, the notebook and the way out. Language is a settings
+            choice rather than a per-beat one, and it is still on the sign-in
+            screen and in Settings, so below `sm` this one goes.
+          */}
+          <div className="hidden sm:block">
+            <FlagSwitch className="bg-white/95 shadow-hud backdrop-blur-sm" />
+          </div>
           <motion.button
             onClick={onExit}
             whileHover={{ scale: 1.08 }}
@@ -999,7 +1014,23 @@ function VillageBeat({
   const info = useMemo(() => analyse(sc), [sc]);
   const [phase, setPhase] = useState<VillagePhase>('intro');
   const [line, setLine] = useState(0);
-  const [tip, setTip] = useState(text.instruction);
+  /*
+   * The instruction under the market, and whatever the board wants to say
+   * instead of it for a moment ("nobody here wants that").
+   *
+   * This used to be one piece of state seeded with `useState(text.instruction)`.
+   * `useState` keeps its first value, so the line was frozen in whichever
+   * language was active when the beat mounted: switch to French from inside the
+   * chapter and every spoken line turned over while this one sat there in
+   * English. Holding only the *override* means the default is read fresh from
+   * the current copy on every render, and a language change clears the
+   * override — the transient line was built from the old language too.
+   */
+  const [tipOverride, setTipOverride] = useState<string | null>(null);
+  const tip = tipOverride ?? text.instruction;
+  useEffect(() => {
+    setTipOverride(null);
+  }, [text.instruction]);
   const [state, setState] = useState<BoardState | null>(null);
   const [outcome, setOutcome] = useState<'solved' | 'stuck' | null>(null);
   const [resetKey, setResetKey] = useState(0);
@@ -1099,7 +1130,7 @@ function VillageBeat({
       live={phase === 'play'}
       resetKey={resetKey}
       onState={setState}
-      onTip={setTip}
+      onTip={setTipOverride}
       onTrade={onTrade}
       showTour={index === 0}
       onResolved={handleResolved}
@@ -1132,7 +1163,7 @@ function VillageBeat({
               onReset={() => {
                 sfx('tap');
                 setResetKey((k) => k + 1);
-                setTip(text.instruction);
+                setTipOverride(null);
               }}
             />
           </div>
@@ -1165,7 +1196,7 @@ function VillageBeat({
             onNext={() => {
               sfx('tap');
               setResetKey((k) => k + 1);
-              setTip(text.instruction);
+              setTipOverride(null);
               setOutcome(null);
               setPhase('play');
             }}
@@ -1328,12 +1359,17 @@ function MoneyBeat({ onNext, onPaid }: { onNext: () => void; onPaid: () => void 
 
   return (
     <>
-      <div className="absolute inset-x-0 top-24 z-10 flex justify-center px-3 sm:top-28">
-        <div className="flex items-center gap-3 rounded-full bg-white/95 px-4 py-2 shadow-hud backdrop-blur-sm">
-          <span className="rounded-full bg-[#fff4d6] px-2.5 py-0.5 font-display text-[11px] font-extrabold text-[#8a5f1a]">
+      {/*
+        104px, not 96px: the chrome above measures 101px tall on a phone, so
+        `top-24` put this capsule 5px into the star row. It also wraps to two
+        lines down there, hence the smaller text and tighter padding.
+      */}
+      <div className="absolute inset-x-0 top-[104px] z-10 flex justify-center px-3 sm:top-28">
+        <div className="flex max-w-full items-center gap-2 rounded-full bg-white/95 px-3 py-2 shadow-hud backdrop-blur-sm sm:gap-3 sm:px-4">
+          <span className="shrink-0 rounded-full bg-[#fff4d6] px-2.5 py-0.5 font-display text-[11px] font-extrabold text-[#8a5f1a]">
             {copy.money.tag}
           </span>
-          <span className="font-display text-sm font-extrabold leading-tight text-[#2b4a66]">
+          <span className="text-pretty font-display text-[13px] font-extrabold leading-tight text-[#2b4a66] sm:text-sm">
             {copy.money.heading}
           </span>
         </div>

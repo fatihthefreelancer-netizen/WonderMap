@@ -12,11 +12,19 @@ export function FlagSwitch({ className = '' }: { className?: string }) {
           onClick={() => setLocale(l.code)}
           aria-label={l.label}
           aria-pressed={locale === l.code}
-          className={`grid h-8 w-8 place-items-center rounded-full text-lg transition ${
-            locale === l.code ? 'bg-sky-bright shadow' : 'opacity-60 hover:opacity-100'
+          title={l.label}
+          className={`grid h-8 w-11 place-items-center overflow-hidden rounded-[7px] transition ${
+            locale === l.code
+              ? 'ring-[3px] ring-sky-deep'
+              : 'opacity-55 hover:opacity-100'
           }`}
         >
-          {l.flag}
+          <img
+            src={l.flagSrc}
+            alt=""
+            draggable={false}
+            className="h-full w-full select-none rounded-[4px] object-cover"
+          />
         </button>
       ))}
     </div>

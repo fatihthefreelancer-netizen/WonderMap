@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { MONEY_CHAIN, type GoodKey } from './content';
-import { GoodInline, fillNodes, useCopy, type SpeechTone } from './pieces';
+import { Good, GoodInline, fillNodes, useCopy, type SpeechTone } from './pieces';
 import { Villager, SceneBox, type VillagerView } from './Villager';
-import { layout, useStage } from './layout';
+import { layout, useStage, type Spot } from './layout';
 import { sfx } from '../../lib/sfx';
 import { Hand, TapRipple } from './Hand';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -21,6 +21,25 @@ import { AnimatePresence, motion } from 'framer-motion';
 type Held = (typeof MONEY_CHAIN)[number] & { holds: GoodKey };
 type Bubble = { id: string; text: ReactNode; tone: SpeechTone };
 
+/**
+ * A purchase, mid-air: the coin on its way to the seller and the goods on
+ * their way back.
+ *
+ * The swap used to be a single `setHeld`, so the coin teleported — one frame
+ * it was in the buyer's hands, the next it was three villagers away. The whole
+ * beat exists to show that *one coin keeps moving down the line*, and the one
+ * thing never actually shown was the moving.
+ */
+interface Flight {
+  buyer: number;
+  seller: number;
+  /** what the seller is handing over */
+  goods: GoodKey;
+}
+
+/** How long the coin and the goods take to cross. */
+const FLIGHT_MS = 620;
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /**
@@ -34,6 +53,67 @@ function bubbleShift(x: number): number {
   if (x > 0.78) return -0.3;
   if (x > 0.66) return -0.16;
   return 0;
+}
+
+/**
+ * One thing crossing the board.
+ *
+ * `left`/`top` are animated rather than `x`/`y` because the endpoints are
+ * fractions of the stage, which resizes with the window; the inner span owns
+ * the centring transform so framer-motion and the `-50%` offsets do not fight
+ * over the same style property. `lift` arcs the two items apart — without it
+ * the coin and the goods travel the same line in opposite directions and read
+ * as one object jittering.
+ */
+function InFlight({
+  good,
+  from,
+  to,
+  lift,
+  boxW,
+  boxH,
+}: {
+  good: GoodKey;
+  from: Spot;
+  to: Spot;
+  /** px to bow the arc by — opposite signs keep the two paths apart */
+  lift: number;
+  boxW: number;
+  boxH: number;
+}) {
+  // Spots are fractions of the scene box, so everything resolves to pixels
+  // here and the animation is a plain transform.
+  const startX = from.x * boxW;
+  const startY = (from.y - 0.12) * boxH;
+  const dx = (to.x - from.x) * boxW;
+  const dy = (to.y - from.y) * boxH;
+  const size = from.w * boxW * 0.38;
+
+  return (
+    <motion.span
+      data-flight={good}
+      className="pointer-events-none absolute z-[70] block"
+      style={{ left: startX, top: startY, width: size, height: size }}
+      initial={{ x: 0, y: 0, opacity: 0, scale: 0.6 }}
+      animate={{
+        x: dx,
+        y: [0, dy / 2 + lift, dy],
+        opacity: [0, 1, 1],
+        scale: [0.6, 1.15, 0.95],
+      }}
+      transition={{ duration: FLIGHT_MS / 1000, ease: 'easeInOut' }}
+    >
+      <span
+        className="block h-full w-full"
+        style={{
+          transform: 'translate(-50%, -50%)',
+          filter: 'drop-shadow(0 4px 6px rgba(0,0,0,.35))',
+        }}
+      >
+        <Good good={good} fluid />
+      </span>
+    </motion.span>
+  );
 }
 
 interface Props {
@@ -62,6 +142,7 @@ export function MoneyChain({ live, onPrompt, onPaid, onDone }: Props) {
    * good, because by then they have done it themselves.
    */
   const [shownHow, setShownHow] = useState(false);
+  const [flight, setFlight] = useState<Flight | null>(null);
   const hint = held.findIndex((v, i) => i !== holder && v.holds === held[holder]?.need);
   const { pos, bodyH, boxW, boxH } = layout(held.length, stageSize);
 
@@ -112,6 +193,13 @@ export function MoneyChain({ live, onPrompt, onPaid, onDone }: Props) {
       setShownHow(true);
       sfx('pay');
       onPaid?.();
+
+      // the coin crosses to the seller, the goods come back — and only once
+      // they have landed does anybody's hands actually change
+      setFlight({ buyer: holder, seller: i, goods: S.holds });
+      await sleep(FLIGHT_MS);
+      setFlight(null);
+
       const next = held.map((v, k) =>
         k === holder ? { ...v, holds: S.holds } : k === i ? { ...v, holds: 'coin' as GoodKey } : v,
       );
@@ -166,11 +254,45 @@ export function MoneyChain({ live, onPrompt, onPaid, onDone }: Props) {
             bubble={bubbles[v.id] ?? null}
             bubbleShiftX={bubbleShift(pos[i].x)}
             bubbleLift={i % 2 ? 26 : 0}
+            // whatever is in the air is not in anybody's hands
+            handEmpty={flight ? i === flight.buyer || i === flight.seller : false}
             interactive={live && i !== holder}
             onClick={() => void buy(i)}
           />
         );
       })}
+
+      {/*
+        The coin going one way, the goods coming back.
+
+        Deliberately not wrapped in AnimatePresence: its children have to be
+        motion components it can key individually, and a Fragment holding two
+        of them is not something it can track. Nothing here needs an exit
+        anyway — `flight` goes null the moment the swap lands and both
+        unmount.
+      */}
+      {flight && (
+        <>
+          <InFlight
+            key={`coin-${flight.buyer}-${flight.seller}`}
+            good="coin"
+            from={pos[flight.buyer]}
+            to={pos[flight.seller]}
+            lift={-0.09 * boxH}
+            boxW={boxW}
+            boxH={boxH}
+          />
+          <InFlight
+            key={`goods-${flight.seller}-${flight.buyer}`}
+            good={flight.goods}
+            from={pos[flight.seller]}
+            to={pos[flight.buyer]}
+            lift={0.09 * boxH}
+            boxW={boxW}
+            boxH={boxH}
+          />
+        </>
+      )}
 
       {/* where to press, until they have pressed once */}
       <AnimatePresence>

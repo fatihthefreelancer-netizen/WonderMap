@@ -12,6 +12,37 @@ import type { Spot } from './layout';
  * width — so the whole figure scales with the scene and stays in proportion.
  */
 
+/**
+ * The name of a good, shown while the villager is hovered.
+ *
+ * A seven-year-old who cannot yet tell a wheel of cheese from a loaf at
+ * thought-bubble size has no way to check: the picture is the only label the
+ * board gives them, and guessing wrong costs a trade. Hovering names both of
+ * a villager's goods.
+ *
+ * It hangs off the villager rather than off each good because the goods
+ * themselves are `pointer-events-none` — they have to be, or they would
+ * swallow the drop that the villager underneath is waiting for. Sized in cqw
+ * like everything else here, so it scales with the board.
+ */
+function GoodName({ text, top }: { text: string; top: string }) {
+  return (
+    <span
+      aria-hidden
+      className="pointer-events-none absolute z-50 whitespace-nowrap rounded-full bg-[#1f3a5f]/95 font-display font-extrabold text-white opacity-0 shadow-hud transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+      style={{
+        left: '50%',
+        top,
+        transform: 'translateX(-50%)',
+        fontSize: 'max(9px, 11cqw)',
+        padding: '0.15em 0.6em',
+      }}
+    >
+      {text}
+    </span>
+  );
+}
+
 export interface VillagerView {
   id: string;
   name: string;
@@ -125,7 +156,7 @@ export const Villager = memo(function Villager({
           (onKeyActivate ?? onClick)?.();
         }
       }}
-      className={`absolute transition-[left,top,opacity,filter] duration-500 ${
+      className={`group absolute transition-[left,top,opacity,filter] duration-500 ${
         interactive ? 'cursor-pointer' : 'cursor-default'
       } ${dim ? 'opacity-30 grayscale' : 'opacity-100'}`}
       style={{
@@ -154,6 +185,7 @@ export const Villager = memo(function Villager({
           <div style={{ width: '70%' }}>
             <Good good={v.need} fluid />
           </div>
+          <GoodName text={copy.goods[v.need].name} top="100%" />
           {happy && (
             <span
               className="absolute grid place-items-center rounded-full bg-[#5fc14e] font-display font-extrabold text-white"
@@ -237,6 +269,10 @@ export const Villager = memo(function Villager({
         >
           <Good good={v.holds} fluid />
         </div>
+        {/* only when there is a loose good drawn to name */}
+        {!handEmpty && !ownGoods && (
+          <GoodName text={copy.goods[v.holds].name} top="72%" />
+        )}
       </div>
 
       {/* name plate at their feet */}

@@ -76,19 +76,31 @@ export function InventMoney({ onNext, onTried, onNote }: Props) {
 
   return (
     <>
-      <div className="absolute inset-x-0 top-16 z-10 flex justify-center px-3 sm:top-20">
-        <div className="flex items-center gap-3 rounded-full bg-white/95 px-4 py-2 shadow-hud backdrop-blur-sm">
-          <span className="rounded-full bg-[#fff4d6] px-2.5 py-0.5 font-display text-[11px] font-extrabold text-[#8a5f1a]">
-            {copy.invent.tag}
-          </span>
-          <span className="font-display text-sm font-extrabold leading-tight text-[#2b4a66]">
-            {copy.invent.heading}
-          </span>
-        </div>
-      </div>
+      {/*
+        The heading lives inside the content area, not pinned above it.
 
-      <div className="absolute inset-x-0 bottom-[156px] top-[104px] grid place-items-center overflow-y-auto px-4 sm:bottom-[176px] sm:top-28">
-        <div className="w-full max-w-3xl">
+        It used to be `absolute top-16`, which is 64px — and the chapter chrome
+        is 101px tall on a phone, so on a narrow screen the question sat on top
+        of the progress bar and the star row. Magic offsets cannot track a
+        header whose height depends on how the title wraps; being the first
+        child of the area that already clears the chrome does.
+
+        `m-auto` on the inner block rather than `justify-center` on the
+        container: a centred flex child cannot be scrolled back to when the
+        content is taller than the box, and its top simply gets cut off.
+      */}
+      <div className="absolute inset-x-0 bottom-[156px] top-[104px] flex flex-col items-center gap-3 overflow-y-auto px-4 sm:bottom-[176px] sm:top-28">
+        <div className="m-auto w-full max-w-3xl">
+          <div className="mb-3 flex justify-center">
+            <div className="flex max-w-full items-center gap-2 rounded-full bg-white/95 px-3 py-2 shadow-hud backdrop-blur-sm sm:gap-3 sm:px-4">
+              <span className="shrink-0 rounded-full bg-[#fff4d6] px-2.5 py-0.5 font-display text-[11px] font-extrabold text-[#8a5f1a]">
+                {copy.invent.tag}
+              </span>
+              <span className="text-pretty font-display text-[13px] font-extrabold leading-tight text-[#2b4a66] sm:text-sm">
+                {copy.invent.heading}
+              </span>
+            </div>
+          </div>
           {/* ----------------------------- the shelf ---------------------------- */}
           <div className="grid grid-cols-4 gap-2 sm:gap-4">
             {CANDIDATES.map((c) => {
@@ -184,14 +196,17 @@ export function InventMoney({ onNext, onTried, onNote }: Props) {
             }
           />
         )}
+        {/*
+          `invent.done` is a single line, and this panel used to show it the
+          moment the fourth property was found — and then the 'done' phase
+          showed the very same line again, so Elias said "four tries, and only
+          one thing passed every single test" twice in a row with nothing
+          between but a button. The last verdict now goes straight to 'done'
+          when everything has been found, so this panel only ever carries the
+          shelf prompt.
+        */}
         {phase === 'shelf' && (
-          <Panel
-            speaker={copy.elder.name}
-            look="elder"
-            text={allFound ? copy.invent.done[0] : copy.invent.shelfHint}
-            button={allFound ? copy.ui.continue : undefined}
-            onNext={allFound ? () => setPhase('done') : undefined}
-          />
+          <Panel speaker={copy.elder.name} look="elder" text={copy.invent.shelfHint} />
         )}
         {phase === 'testing' && activeCopy && activeDef && (
           <Panel speaker={copy.elder.name} look="elder" pose="pointing" text={activeCopy.test} />
@@ -205,7 +220,7 @@ export function InventMoney({ onNext, onTried, onNote }: Props) {
             button={copy.ui.continue}
             onNext={() => {
               setActive(null);
-              setPhase('shelf');
+              setPhase(allFound ? 'done' : 'shelf');
             }}
           />
         )}

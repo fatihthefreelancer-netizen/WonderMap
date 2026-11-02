@@ -434,7 +434,7 @@ export function QuestBoard({
         the distance between "my thing" and "that trader" is a short, obvious
         drag rather than a journey from the corner of the screen.
       */}
-      <div className="relative flex shrink-0 items-center justify-center gap-3 pb-1">
+      <div className="relative flex shrink-0 flex-wrap items-center justify-center gap-2 pb-1 sm:gap-3">
         <motion.button
           type="button"
           aria-label={`${copy.ui.carrying}: ${copy.goods[carrying].name}`}
@@ -472,6 +472,33 @@ export function QuestBoard({
             </span>
           </span>
         </motion.button>
+
+        {/*
+          And what it is all for, right beside it.
+          The goal was only on the side panel, which is where a learner's eye
+          is not: they are looking at their own hands and at the traders. Three
+          trades into a chain it is genuinely easy to forget what you were
+          collecting, and the answer was off in a corner. Quieter than the
+          carry card on purpose — this one is a reminder, not a handle.
+        */}
+        <div
+          className="pointer-events-none flex select-none items-center gap-2.5 rounded-[26px] bg-white/80 py-2.5 pl-2.5 pr-5 shadow-hud backdrop-blur-sm"
+          aria-label={`${copy.ui.youWant}: ${copy.goods[scenario.goal].name}`}
+        >
+          <span className="grid h-14 w-14 place-items-center rounded-[18px] bg-[#eafbe4] sm:h-16 sm:w-16">
+            <span className="block h-9 w-9 sm:h-11 sm:w-11">
+              <Good good={scenario.goal} fluid />
+            </span>
+          </span>
+          <span className="text-start leading-tight">
+            <span className="block font-display text-[10px] font-extrabold uppercase tracking-wide text-[#8296ad]">
+              {copy.ui.youWant}
+            </span>
+            <span className="block font-display text-[16px] font-extrabold text-[#2d6a31] sm:text-[19px]">
+              {copy.goods[scenario.goal].name}
+            </span>
+          </span>
+        </div>
 
         <AnimatePresence>
           {tour && live && (

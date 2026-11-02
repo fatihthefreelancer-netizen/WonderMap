@@ -8,14 +8,22 @@ export type Locale = 'en' | 'fr' | 'ar';
 export interface LocaleMeta {
   code: Locale;
   label: string;
-  flag: string;
+  /**
+   * A painted flag rather than the emoji.
+   *
+   * Flag emoji are regional-indicator pairs, and whether they render as a flag
+   * at all is up to the platform's font: Windows draws them as two grey
+   * letters — GB, FR, SA — which is why the switcher looked like a row of
+   * country codes instead of flags.
+   */
+  flagSrc: string;
   dir: 'ltr' | 'rtl';
 }
 
 export const LOCALES: LocaleMeta[] = [
-  { code: 'en', label: 'English', flag: '🇬🇧', dir: 'ltr' },
-  { code: 'fr', label: 'Français', flag: '🇫🇷', dir: 'ltr' },
-  { code: 'ar', label: 'العربية', flag: '🇸🇦', dir: 'rtl' },
+  { code: 'en', label: 'English', flagSrc: '/flags/en.webp', dir: 'ltr' },
+  { code: 'fr', label: 'Français', flagSrc: '/flags/fr.webp', dir: 'ltr' },
+  { code: 'ar', label: 'العربية', flagSrc: '/flags/ar.webp', dir: 'rtl' },
 ];
 
 type Dict = Record<string, string>;
