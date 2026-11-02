@@ -1,0 +1,7 @@
+# The PNG masters. They are the source the WebP in public/ was made from and
+# nothing in the build reads them, so there is no reason to upload 8.7 MB of
+# them on every deploy.
+client/art-src
+
+# Editor/agent config, not part of the app.
+.claude

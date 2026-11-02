@@ -18,3 +18,5 @@ shared/dist/
 
 # incremental TypeScript build state (tsc -b)
 *.tsbuildinfo
+
+.vercel
