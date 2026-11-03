@@ -117,9 +117,16 @@ export function InventMoney({ onNext, onTried, onNote }: Props) {
         container: a centred flex child cannot be scrolled back to when the
         content is taller than the box, and its top simply gets cut off.
       */}
-      <div className="absolute inset-x-0 bottom-[156px] top-[104px] flex flex-col items-center gap-3 overflow-y-auto px-4 sm:bottom-[176px] sm:top-28">
+      {/*
+        The bottom reserve is for the instruction strip, and it was more than
+        three times the size of it: 176px held back for a pill measuring 73px
+        including its padding. The shelf scrolled by 35px while 119px of wall
+        sat empty underneath — the one thing worse than a cramped screen is a
+        cramped screen with space going spare next to it.
+      */}
+      <div className="absolute inset-x-0 bottom-[96px] top-[104px] flex flex-col items-center gap-3 overflow-y-auto px-4 sm:top-28">
         <div className="m-auto w-full max-w-3xl">
-          <div className="mb-3 flex justify-center">
+          <div className="mb-3 [@media(max-height:560px)]:mb-1.5 flex justify-center">
             <div className="flex max-w-full items-center gap-2 rounded-full bg-white/95 px-3 py-2 shadow-hud backdrop-blur-sm sm:gap-3 sm:px-4">
               <span className="shrink-0 rounded-full bg-[#fff4d6] px-2.5 py-0.5 font-display text-[11px] font-extrabold text-[#8a5f1a]">
                 {copy.invent.tag}
@@ -143,11 +150,11 @@ export function InventMoney({ onNext, onTried, onNote }: Props) {
                   whileTap={phase === 'shelf' && !used ? { scale: 0.95 } : undefined}
                   animate={isActive ? { scale: [1, 1.12, 1] } : { scale: 1 }}
                   transition={{ duration: 0.6, repeat: isActive && phase === 'testing' ? Infinity : 0 }}
-                  className={`relative grid place-items-center rounded-3xl bg-white/95 p-3 shadow-hud backdrop-blur-sm transition-opacity sm:p-4 ${
+                  className={`relative grid place-items-center rounded-3xl bg-white/95 p-3 [@media(max-height:560px)]:p-1.5 shadow-hud backdrop-blur-sm transition-opacity sm:p-4 ${
                     used && !isActive ? 'opacity-60' : ''
                   } ${phase === 'shelf' && !used ? 'cursor-pointer' : 'cursor-default'}`}
                 >
-                  <div className="h-14 w-14 sm:h-20 sm:w-20">
+                  <div className="h-14 w-14 [@media(max-height:560px)]:h-10 [@media(max-height:560px)]:w-10 sm:h-20 sm:w-20">
                     <Good good={c.good} fluid />
                   </div>
                   <span className="mt-1 font-display text-[11px] font-extrabold leading-tight text-[#2b4a66] sm:text-[13px]">
@@ -177,7 +184,7 @@ export function InventMoney({ onNext, onTried, onNote }: Props) {
           )}
 
           {/* --------------------- what makes good money ------------------------ */}
-          <div className="mt-4 rounded-[26px] bg-white/95 p-4 shadow-hud backdrop-blur-sm">
+          <div className="mt-4 [@media(max-height:560px)]:mt-2 rounded-[26px] bg-white/95 p-4 [@media(max-height:560px)]:p-2.5 shadow-hud backdrop-blur-sm">
             <div className="mb-2 flex items-center gap-2">
               <img src={art('scales')} alt="" width={26} height={26} />
               <p className="font-display text-[13px] font-extrabold text-[#2b4a66]">
